@@ -25,6 +25,7 @@ const main = async () => {
 
   const app = express();
 
+  // Session/Cookie store
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [HelloResolver, UserResolver],
