@@ -25,9 +25,9 @@ export class Post extends BaseEntity {
 
   @Field()
   @CreateDateColumn()
-  createAt!: Date;
+  createAt: Date;
 
   @Field()
   @UpdateDateColumn()
-  updateAt!: Date;
+  updateAt: Date;
 }

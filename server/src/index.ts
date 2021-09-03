@@ -13,6 +13,7 @@ import { Post } from "./entities/Post";
 import { User } from "./entities/User";
 import { HelloResolver } from "./resolvers/hello";
 import { UserResolver } from "./resolvers/user";
+import { PostResolver } from "./resolvers/post";
 import { Context } from "./types/Context";
 
 const main = async () => {
@@ -55,7 +56,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver],
+      resolvers: [HelloResolver, UserResolver, PostResolver],
       validate: false,
     }),
     context: ({ req, res }): Context => ({ req, res }),

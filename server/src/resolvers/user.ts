@@ -1,17 +1,19 @@
-import { validateRegisterInput } from "../utils/validateRegisterInput";
-import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
-import { User } from "../entities/User";
-import { UserMutationResponse } from "../types/UserMutationResponse";
 import argon2 from "argon2";
-import { RegisterInput } from "../types/RegisterInput";
+import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
+import { COOKIE_NAME } from "../constants";
+import { User } from "../entities/User";
+import { Context } from "../types/Context";
 import { LoginInput } from "../types/LoginInput";
-import { Context } from "src/types/Context";
+import { RegisterInput } from "../types/RegisterInput";
+import { UserMutationResponse } from "../types/UserMutationResponse";
+import { validateRegisterInput } from "../utils/validateRegisterInput";
 
 @Resolver()
 export class UserResolver {
-  @Mutation((_returns) => UserMutationResponse, { nullable: true })
+  @Mutation((_return) => UserMutationResponse, { nullable: true })
   async register(
-    @Arg("registerInput") registerInput: RegisterInput
+    @Arg("registerInput") registerInput: RegisterInput,
+    @Ctx() { req }: Context
   ): Promise<UserMutationResponse> {
     const validateRegisterInputErrors = validateRegisterInput(registerInput);
     if (validateRegisterInputErrors !== null)
@@ -43,11 +45,14 @@ export class UserResolver {
         password: hashedPassword,
         email,
       });
+
+      await newUser.save();
+      req.session.userId = newUser.id;
       return {
         code: 200,
         success: true,
         message: "User registration successful",
-        user: await User.save(newUser),
+        user: newUser,
       };
     } catch (error) {
       console.log(error);
@@ -109,5 +114,19 @@ export class UserResolver {
         message: `Interval server error ${error.message}`,
       };
     }
+  }
+  @Mutation((_return) => Boolean)
+  logout(@Ctx() { req, res }: Context): Promise<boolean> {
+    return new Promise((resolve, _reject) => {
+      res.clearCookie(COOKIE_NAME);
+
+      req.session.destroy((error) => {
+        if (error) {
+          console.log("DESTROYING SESSION ERROR", error);
+          resolve(false);
+        }
+        resolve(true);
+      });
+    });
   }
 }
