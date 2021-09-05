@@ -1,5 +1,5 @@
 import argon2 from "argon2";
-import { Arg, Ctx, Mutation, ID, Resolver } from "type-graphql";
+import { Arg, Ctx, ID, Mutation, Query, Resolver } from "type-graphql";
 import { COOKIE_NAME } from "../constants";
 import { User } from "../entities/User";
 import { Context } from "../types/Context";
@@ -10,6 +10,13 @@ import { validateRegisterInput } from "../utils/validateRegisterInput";
 
 @Resolver()
 export class UserResolver {
+  @Query((_retunr) => User, { nullable: true })
+  async me(@Ctx() { req }: Context): Promise<User | undefined | null> {
+    if (!req.session.userId) return null;
+    const user = await User.findOne(req.session.userId);
+    return user;
+  }
+
   @Mutation((_return) => UserMutationResponse, { nullable: true })
   async register(
     @Arg("registerInput") registerInput: RegisterInput,
