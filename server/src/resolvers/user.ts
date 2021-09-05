@@ -1,5 +1,5 @@
 import argon2 from "argon2";
-import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
+import { Arg, Ctx, Mutation, ID, Resolver } from "type-graphql";
 import { COOKIE_NAME } from "../constants";
 import { User } from "../entities/User";
 import { Context } from "../types/Context";
@@ -128,5 +128,25 @@ export class UserResolver {
         resolve(true);
       });
     });
+  }
+  @Mutation((_return) => UserMutationResponse)
+  async deleteUser(
+    @Arg("id", (_type) => ID) id: number
+  ): Promise<UserMutationResponse> {
+    const existingPost = await User.findOne(id);
+    if (!existingPost)
+      return {
+        code: 400,
+        success: false,
+        message: "Post not found",
+      };
+
+    await User.delete({ id });
+
+    return {
+      code: 200,
+      success: true,
+      message: "Post deleted successfully",
+    };
   }
 }
