@@ -1,13 +1,20 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Spinner, Flex } from "@chakra-ui/react";
 import { Form, Formik, FormikHelpers } from "formik";
 import { useRouter } from "next/router";
 import InputField from "../components/InputField";
 import Wrapper from "../components/Wrapper";
-import { LoginInput, useLoginMutation } from "../generated/graphql";
+import {
+  LoginInput,
+  MeDocument,
+  MeQuery,
+  useLoginMutation,
+} from "../generated/graphql";
 import { mapFieldErrors } from "../helpers/mapFieldErrors";
+import { useCheckAuth } from "../utils/useCheckAuth";
 
 const Login = () => {
   const router = useRouter();
+  const { data: authData, loading: authLoading } = useCheckAuth();
   const initialValues: LoginInput = {
     usernameOrEmail: "",
     password: "",
@@ -23,6 +30,17 @@ const Login = () => {
       variables: {
         loginInput: values,
       },
+      update(cache, { data }) {
+        console.log("data login", data);
+        // const meData = cache.readQuery({ query: MeDocument });
+        // console.log("me data", meData);
+        if (data?.login.success) {
+          cache.writeQuery<MeQuery>({
+            query: MeDocument,
+            data: { me: data.login.user },
+          });
+        }
+      },
     });
 
     if (response.data?.login?.errors) {
@@ -33,40 +51,48 @@ const Login = () => {
     }
   };
   return (
-    <Wrapper>
-      {error && <p>Failed to Login. Interval server error</p>}
-      {data && data.login?.success && (
-        <p>Logined successfully {JSON.stringify(data)}</p>
+    <>
+      {authLoading || (!authLoading && authData?.me) ? (
+        <Flex justifyContent="center" align="center" minH="100vh">
+          <Spinner />
+        </Flex>
+      ) : (
+        <Wrapper>
+          {error && <p>Failed to Login. Interval server error</p>}
+          {data && data.login?.success && (
+            <p>Logined successfully {JSON.stringify(data)}</p>
+          )}
+          <Formik initialValues={initialValues} onSubmit={onLoginSubmit}>
+            {({ isSubmitting }) => (
+              <Form>
+                <InputField
+                  name="usernameOrEmail"
+                  placeholder="Username Or Email"
+                  label="Username Or Email"
+                  type="text"
+                />
+                <Box mt={4}>
+                  <InputField
+                    name="password"
+                    placeholder="Password"
+                    label="Password"
+                    type="password"
+                  />
+                </Box>
+                <Button
+                  type="submit"
+                  colorScheme="teal"
+                  mt={4}
+                  isLoading={isSubmitting}
+                >
+                  Login
+                </Button>
+              </Form>
+            )}
+          </Formik>
+        </Wrapper>
       )}
-      <Formik initialValues={initialValues} onSubmit={onLoginSubmit}>
-        {({ isSubmitting }) => (
-          <Form>
-            <InputField
-              name="usernameOrEmail"
-              placeholder="Username Or Email"
-              label="Username Or Email"
-              type="text"
-            />
-            <Box mt={4}>
-              <InputField
-                name="password"
-                placeholder="Password"
-                label="Password"
-                type="password"
-              />
-            </Box>
-            <Button
-              type="submit"
-              colorScheme="teal"
-              mt={4}
-              isLoading={isSubmitting}
-            >
-              Login
-            </Button>
-          </Form>
-        )}
-      </Formik>
-    </Wrapper>
+    </>
   );
 };
 
