@@ -1,11 +1,13 @@
 import { Box, Button } from "@chakra-ui/react";
 import { Form, Formik, FormikHelpers } from "formik";
+import { useRouter } from "next/router";
 import InputField from "../components/InputField";
 import Wrapper from "../components/Wrapper";
 import { RegisterInput, useRegisterMutation } from "../generated/graphql";
 import { mapFieldErrors } from "../helpers/mapFieldErrors";
 
 const Register = () => {
+  const router = useRouter();
   const initialValues: RegisterInput = {
     username: "",
     email: "",
@@ -26,6 +28,9 @@ const Register = () => {
 
     if (response.data?.register?.errors) {
       setErrors(mapFieldErrors(response.data.register.errors));
+    } else if (response.data?.register?.user) {
+      // register successfully
+      router.push("/");
     }
   };
   return (
