@@ -1,5 +1,6 @@
-import { Box, Button, Spinner, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex, Link, Spinner, useToast } from "@chakra-ui/react";
 import { Form, Formik, FormikHelpers } from "formik";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
 import InputField from "../components/InputField";
 import Wrapper from "../components/Wrapper";
@@ -14,13 +15,16 @@ import { useCheckAuth } from "../utils/useCheckAuth";
 
 const Login = () => {
   const router = useRouter();
+
   const { data: authData, loading: authLoading } = useCheckAuth();
+
   const initialValues: LoginInput = {
     usernameOrEmail: "",
     password: "",
   };
   const [LoginUser, { loading: _loginUserLoading, data, error }] =
     useLoginMutation();
+  const toast = useToast();
 
   const onLoginSubmit = async (
     values: LoginInput,
@@ -46,6 +50,13 @@ const Login = () => {
     if (response.data?.login?.errors) {
       setErrors(mapFieldErrors(response.data.login.errors));
     } else if (response.data?.login?.user) {
+      toast({
+        title: "Welcome.",
+        description: `${response.data.login.user.username}`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
       // Login successfully
       router.push("/");
     }
@@ -59,9 +70,7 @@ const Login = () => {
       ) : (
         <Wrapper>
           {error && <p>Failed to Login. Interval server error</p>}
-          {data && data.login?.success && (
-            <p>Logined successfully {JSON.stringify(data)}</p>
-          )}
+
           <Formik initialValues={initialValues} onSubmit={onLoginSubmit}>
             {({ isSubmitting }) => (
               <Form>
@@ -71,7 +80,7 @@ const Login = () => {
                   label="Username Or Email"
                   type="text"
                 />
-                <Box mt={4}>
+                <Box mt={4} mb={4}>
                   <InputField
                     name="password"
                     placeholder="Password"
@@ -79,6 +88,11 @@ const Login = () => {
                     type="password"
                   />
                 </Box>
+                <Flex>
+                  <NextLink href="/forgot-password">
+                    <Link ml="auto">Forgot Password</Link>
+                  </NextLink>
+                </Flex>
                 <Button
                   type="submit"
                   colorScheme="teal"

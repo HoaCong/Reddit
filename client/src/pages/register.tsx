@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Spinner } from "@chakra-ui/react";
+import { Box, Button, Flex, Spinner, useToast } from "@chakra-ui/react";
 import { Form, Formik, FormikHelpers } from "formik";
 import { useRouter } from "next/router";
 import InputField from "../components/InputField";
@@ -22,7 +22,7 @@ const Register = () => {
   };
   const [registerUser, { loading: _registerUserLoading, data, error }] =
     useRegisterMutation();
-
+  const toast = useToast();
   const onRegisterSubmit = async (
     values: RegisterInput,
     { setErrors }: FormikHelpers<RegisterInput>
@@ -44,6 +44,13 @@ const Register = () => {
     if (response.data?.register?.errors) {
       setErrors(mapFieldErrors(response.data.register.errors));
     } else if (response.data?.register?.user) {
+      toast({
+        title: "Welcome.",
+        description: `${response.data.register.user.username}`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
       // register successfully
       router.push("/");
     }
@@ -57,9 +64,7 @@ const Register = () => {
       ) : (
         <Wrapper>
           {error && <p>Failed to register</p>}
-          {data && data.register?.success && (
-            <p>Registered successfully {JSON.stringify(data)}</p>
-          )}
+
           <Formik initialValues={initialValues} onSubmit={onRegisterSubmit}>
             {({ isSubmitting }) => (
               <Form>
