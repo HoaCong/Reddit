@@ -1,5 +1,14 @@
 import argon2 from "argon2";
-import { Arg, Ctx, ID, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  FieldResolver,
+  ID,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from "type-graphql";
 import { v4 as uuidv4 } from "uuid";
 import { COOKIE_NAME } from "../constants";
 import { User } from "../entities/User";
@@ -13,8 +22,12 @@ import { validateRegisterInput } from "../utils/validateRegisterInput";
 import { TokenModel } from "../models/Token";
 import { ForgotPasswordInput } from "./../types/ForgotPassword";
 
-@Resolver()
+@Resolver((_return) => User)
 export class UserResolver {
+  @FieldResolver((_return) => String)
+  email(@Root() user: User, @Ctx() { req }: Context) {
+    return req.session.userId === user.id ? user.email : "";
+  }
   @Query((_retunr) => User, { nullable: true })
   async me(@Ctx() { req }: Context): Promise<User | undefined | null> {
     if (!req.session.userId) return null;

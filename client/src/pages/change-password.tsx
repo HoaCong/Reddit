@@ -4,12 +4,14 @@ import { Box, Flex, Link } from "@chakra-ui/layout";
 import { Spinner } from "@chakra-ui/spinner";
 import { Form, Formik, FormikHelpers } from "formik";
 import NextLink from "next/link";
-import { useRouter } from "next/router";
+import router, { useRouter } from "next/router";
 import React from "react";
 import InputField from "../components/InputField";
 import Wrapper from "../components/Wrapper";
 import {
   ChangePasswordInput,
+  MeDocument,
+  MeQuery,
   useChangePasswordMutation,
 } from "../generated/graphql";
 import { mapFieldErrors } from "../helpers/mapFieldErrors";
@@ -31,6 +33,14 @@ const ChangePassword = () => {
           token: query.token as string,
           changePasswordInput: values,
         },
+        update(cache, { data }) {
+          if (data?.changePassword.success) {
+            cache.writeQuery<MeQuery>({
+              query: MeDocument,
+              data: { me: data.changePassword.user },
+            });
+          }
+        },
       });
       if (response.data?.changePassword.errors) {
         const fieldErrors = mapFieldErrors(response.data.changePassword.errors);
@@ -38,6 +48,8 @@ const ChangePassword = () => {
           setErrorToken(fieldErrors.token);
         }
         setErrors(fieldErrors);
+      } else if (response.data?.changePassword.user) {
+        router.push("/");
       }
     }
   };
@@ -49,7 +61,7 @@ const ChangePassword = () => {
     );
   } else if (!query.token || !query.userId)
     return (
-      <Wrapper>
+      <Wrapper size="small">
         <Alert status="error">
           <AlertIcon />
           <AlertTitle>Invalid password change request</AlertTitle>

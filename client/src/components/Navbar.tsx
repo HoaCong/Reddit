@@ -37,9 +37,15 @@ const Navbar = () => {
     );
   } else {
     body = (
-      <Button onClick={logoutUser} isLoading={useLogoutMutationLoading}>
-        Logout
-      </Button>
+      <>
+        <NextLink href="/create-post">
+          <Button mr={2}>Create Post</Button>
+        </NextLink>
+
+        <Button onClick={logoutUser} isLoading={useLogoutMutationLoading}>
+          Logout
+        </Button>
+      </>
     );
   }
 

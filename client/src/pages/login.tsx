@@ -68,7 +68,7 @@ const Login = () => {
           <Spinner />
         </Flex>
       ) : (
-        <Wrapper>
+        <Wrapper size="small">
           {error && <p>Failed to Login. Interval server error</p>}
 
           <Formik initialValues={initialValues} onSubmit={onLoginSubmit}>
