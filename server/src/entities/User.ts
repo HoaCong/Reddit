@@ -9,9 +9,10 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Post } from "./Post";
+import { Upvote } from "./Upvote";
 
 @ObjectType()
-@Entity() //db table
+@Entity() // db table
 export class User extends BaseEntity {
   @Field((_type) => ID)
   @PrimaryGeneratedColumn()
@@ -31,11 +32,14 @@ export class User extends BaseEntity {
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
 
+  @OneToMany((_to) => Upvote, (upvote) => upvote.user)
+  upvotes: Upvote[];
+
   @Field()
   @CreateDateColumn()
-  createAt!: Date;
+  createdAt: Date;
 
   @Field()
   @UpdateDateColumn()
-  updateAt!: Date;
+  updatedAt: Date;
 }
