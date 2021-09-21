@@ -199,9 +199,9 @@ export type MutationStatusesFragment = { __typename?: 'UserMutationResponse', co
 
 export type PostMutationStatusesFragment = { __typename?: 'PostMutationResponse', code: number, success: boolean, message?: Maybe<string> };
 
-export type PostMutationResponseFragment = { __typename?: 'PostMutationResponse', code: number, success: boolean, message?: Maybe<string>, post?: Maybe<{ __typename?: 'Post', id: string, title: string, text: string, createAt: any, updateAt: any, textSnippet: string, points: number, user: { __typename?: 'User', id: string, username: string } }>, errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>> };
+export type PostMutationResponseFragment = { __typename?: 'PostMutationResponse', code: number, success: boolean, message?: Maybe<string>, post?: Maybe<{ __typename?: 'Post', id: string, title: string, text: string, createAt: any, updateAt: any, textSnippet: string, points: number, voteType: number, user: { __typename?: 'User', id: string, username: string } }>, errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>> };
 
-export type PostWithUserInfoFragment = { __typename?: 'Post', id: string, title: string, text: string, createAt: any, updateAt: any, textSnippet: string, points: number, user: { __typename?: 'User', id: string, username: string } };
+export type PostWithUserInfoFragment = { __typename?: 'Post', id: string, title: string, text: string, createAt: any, updateAt: any, textSnippet: string, points: number, voteType: number, user: { __typename?: 'User', id: string, username: string } };
 
 export type UserInfoFragment = { __typename?: 'User', id: string, username: string, email: string };
 
@@ -221,7 +221,7 @@ export type CreatePostMutationVariables = Exact<{
 }>;
 
 
-export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'PostMutationResponse', code: number, success: boolean, message?: Maybe<string>, post?: Maybe<{ __typename?: 'Post', id: string, title: string, text: string, createAt: any, updateAt: any, textSnippet: string, points: number, user: { __typename?: 'User', id: string, username: string } }>, errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>> } };
+export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'PostMutationResponse', code: number, success: boolean, message?: Maybe<string>, post?: Maybe<{ __typename?: 'Post', id: string, title: string, text: string, createAt: any, updateAt: any, textSnippet: string, points: number, voteType: number, user: { __typename?: 'User', id: string, username: string } }>, errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>> } };
 
 export type DeletePostMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -261,7 +261,7 @@ export type UpdatePostMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePostMutation = { __typename?: 'Mutation', updatePost: { __typename?: 'PostMutationResponse', code: number, success: boolean, message?: Maybe<string>, post?: Maybe<{ __typename?: 'Post', id: string, title: string, text: string, createAt: any, updateAt: any, textSnippet: string, points: number, user: { __typename?: 'User', id: string, username: string } }>, errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>> } };
+export type UpdatePostMutation = { __typename?: 'Mutation', updatePost: { __typename?: 'PostMutationResponse', code: number, success: boolean, message?: Maybe<string>, post?: Maybe<{ __typename?: 'Post', id: string, title: string, text: string, createAt: any, updateAt: any, textSnippet: string, points: number, voteType: number, user: { __typename?: 'User', id: string, username: string } }>, errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>> } };
 
 export type VoteMutationVariables = Exact<{
   inputVoteValue: VoteType;
@@ -269,7 +269,7 @@ export type VoteMutationVariables = Exact<{
 }>;
 
 
-export type VoteMutation = { __typename?: 'Mutation', vote: { __typename?: 'PostMutationResponse', code: number, success: boolean, message?: Maybe<string>, post?: Maybe<{ __typename?: 'Post', id: string, title: string, text: string, createAt: any, updateAt: any, textSnippet: string, points: number, user: { __typename?: 'User', id: string, username: string } }>, errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>> } };
+export type VoteMutation = { __typename?: 'Mutation', vote: { __typename?: 'PostMutationResponse', code: number, success: boolean, message?: Maybe<string>, post?: Maybe<{ __typename?: 'Post', id: string, title: string, text: string, createAt: any, updateAt: any, textSnippet: string, points: number, voteType: number, user: { __typename?: 'User', id: string, username: string } }>, errors?: Maybe<Array<{ __typename?: 'FieldError', field: string, message: string }>> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -297,7 +297,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts?: Maybe<{ __typename?: 'PaginatedPosts', totalCount: number, cursor: any, hasMore: boolean, paginatedPosts: Array<{ __typename?: 'Post', id: string, title: string, text: string, createAt: any, updateAt: any, textSnippet: string, points: number, user: { __typename?: 'User', id: string, username: string } }> }> };
+export type PostsQuery = { __typename?: 'Query', posts?: Maybe<{ __typename?: 'PaginatedPosts', totalCount: number, cursor: any, hasMore: boolean, paginatedPosts: Array<{ __typename?: 'Post', id: string, title: string, text: string, createAt: any, updateAt: any, textSnippet: string, points: number, voteType: number, user: { __typename?: 'User', id: string, username: string } }> }> };
 
 export const PostMutationStatusesFragmentDoc = gql`
     fragment postMutationStatuses on PostMutationResponse {
@@ -315,6 +315,7 @@ export const PostWithUserInfoFragmentDoc = gql`
   updateAt
   textSnippet
   points
+  voteType
   user {
     id
     username

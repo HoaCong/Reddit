@@ -6,6 +6,7 @@ fragment postWithUserInfo on Post {
   updateAt
   textSnippet
   points
+  voteType
   user {
     id
     username

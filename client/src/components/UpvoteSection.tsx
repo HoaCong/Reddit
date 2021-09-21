@@ -47,31 +47,29 @@ const UpvoteSection = ({ post }: UpvoteSectionProps) => {
       <IconButton
         icon={<ChevronUpIcon />}
         aria-label="upvote"
-        // onClick={
-        //   post.voteType === VoteTypeValues.Upvote
-        //     ? undefined
-        //     : upvote.bind(this, post.id)
-        // }
-        onClick={upvote.bind(this, post.id)}
+        onClick={
+          post.voteType === VoteTypeValues.Upvote
+            ? undefined
+            : upvote.bind(this, post.id)
+        }
         isLoading={loading && loadingState === "upvote-loading"}
-        // colorScheme={
-        //   post.voteType === VoteTypeValues.Upvote ? "green" : undefined
-        // }
+        colorScheme={
+          post.voteType === VoteTypeValues.Upvote ? "green" : undefined
+        }
       />
       {post.points}
       <IconButton
         icon={<ChevronDownIcon />}
         aria-label="downvote"
-        // onClick={
-        //   post.voteType === VoteTypeValues.Downvote
-        //     ? undefined
-        //     : downvote.bind(this, post.id)
-        // }
-        onClick={downvote.bind(this, post.id)}
+        onClick={
+          post.voteType === VoteTypeValues.Downvote
+            ? undefined
+            : downvote.bind(this, post.id)
+        }
         isLoading={loading && loadingState === "downvote-loading"}
-        // colorScheme={
-        //   post.voteType === VoteTypeValues.Downvote ? "red" : undefined
-        // }
+        colorScheme={
+          post.voteType === VoteTypeValues.Downvote ? "red" : undefined
+        }
       />
     </Flex>
   );
