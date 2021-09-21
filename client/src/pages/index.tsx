@@ -15,12 +15,11 @@ import Layout from "../components/Layout";
 import PostEditDeleteButtons from "../components/PostEditDeleteButton";
 import { PostsDocument, useMeQuery, usePostsQuery } from "../generated/graphql";
 import { addApolloState, initializeApollo } from "../lib/apolloClient";
-// import UpvoteSection from "../components/UpvoteSection";
+import UpvoteSection from "../components/UpvoteSection";
 
 export const limit = 3;
 
 const Index = () => {
-  const { data: meData } = useMeQuery();
   const { data, loading, fetchMore, networkStatus } = usePostsQuery({
     variables: { limit },
 
@@ -43,7 +42,7 @@ const Index = () => {
         <Stack spacing={8}>
           {data?.posts?.paginatedPosts.map((post) => (
             <Flex key={post.id} p={5} shadow="md" borderWidth="1px">
-              {/* <UpvoteSection post={post} /> */}
+              <UpvoteSection post={post} />
               <Box flex={1}>
                 <NextLink href={`/post/${post.id}`}>
                   <Link>
