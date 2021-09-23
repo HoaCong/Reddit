@@ -68,6 +68,7 @@ const main = async () => {
     useFindAndModify: false,
   });
   console.log("MongoDB Connected");
+  app.set("trust proxy", 1);
   app.use(
     session({
       name: COOKIE_NAME,
@@ -76,8 +77,7 @@ const main = async () => {
         maxAge: 1000 * 60 * 60, // one hour
         httpOnly: true, // JS front end cannot access the cookie
         secure: __prod__, // cookie only works in https
-        sameSite: "lax",
-        domain: __prod__ ? ".vercel.app" : undefined,
+        sameSite: "none",
       },
       secret: process.env.SESSION_SECRET_DEV_PROD as string,
       saveUninitialized: false, // don't save empty sessions, right from the start
