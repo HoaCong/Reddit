@@ -17,18 +17,47 @@ import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
 import { Context } from "./types/Context";
+import { buildDataLoaders } from "./utils/dataLoaders";
+import path from "path";
 
 const main = async () => {
   const connection = await createConnection({
     type: "postgres",
-    database: "reddit",
-    username: process.env.DB_USERNAME_DEV,
-    password: process.env.DB_PASSWORD_DEV,
+    ...(__prod__
+      ? { url: process.env.DATABASE_URL }
+      : {
+          database: "reddit",
+          username: process.env.DB_USERNAME_DEV,
+          password: process.env.DB_PASSWORD_DEV,
+        }),
     logging: true,
-    synchronize: true,
+    ...(__prod__
+      ? {
+          extra: {
+            ssl: {
+              rejectUnauthorized: false,
+            },
+          },
+          ssl: true,
+        }
+      : {}),
+    ...(__prod__ ? {} : { synchronize: true }),
     entities: [User, Post, Upvote],
+    migrations: [path.join(__dirname, "/migrations/*")],
   });
+
+  if (__prod__) await connection.runMigrations();
+
   const app = express();
+
+  app.use(
+    cors({
+      origin: __prod__
+        ? process.env.CORS_ORIGIN_PROD
+        : process.env.CORS_ORIGIN_DEV,
+      credentials: true,
+    })
+  );
   app.use(cors({ origin: "http://localhost:3000", credentials: true }));
   // Session/Cookie store
   const mongoUrl = `mongodb+srv://${process.env.SESSION_DB_USERNAME_DEV_PROD}:${process.env.SESSION_DB_PASSWORD_DEV_PROD}@reddit.mct3o.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
@@ -48,6 +77,7 @@ const main = async () => {
         httpOnly: true, // JS front end cannot access the cookie
         secure: __prod__, // cookie only works in https
         sameSite: "lax",
+        domain: __prod__ ? ".vercel.app" : undefined,
       },
       secret: process.env.SESSION_SECRET_DEV_PROD as string,
       saveUninitialized: false, // don't save empty sessions, right from the start
@@ -60,7 +90,12 @@ const main = async () => {
       resolvers: [HelloResolver, UserResolver, PostResolver],
       validate: false,
     }),
-    context: ({ req, res }): Context => ({ req, res, connection }),
+    context: ({ req, res }): Context => ({
+      req,
+      res,
+      connection,
+      dataLoaders: buildDataLoaders(),
+    }),
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
   });
   await apolloServer.start();
