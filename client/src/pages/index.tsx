@@ -23,7 +23,7 @@ const Index = () => {
   const { data, loading, fetchMore, networkStatus } = usePostsQuery({
     variables: { limit },
 
-    // component nao render boi cai Posts query, se rerender khi networkStatus thay doi, tuc la fetchMore
+    // component nao render boi cai Posts query, se được rerender khi networkStatus thay doi, tuc la fetchMore
     notifyOnNetworkStatusChange: true,
   });
 
