@@ -45,7 +45,10 @@ function createApolloClient(headers: IncomingHttpHeaders | null = null) {
     });
   };
   const httpLink = new HttpLink({
-    uri: "http://localhost:4000/graphql", // Server URL (must be absolute)
+    uri:
+      process.env.NODE_ENV === "production"
+        ? "https://desolate-ocean-98513.herokuapp.com/graphqlgit"
+        : "http://localhost:4000/graphql", // Server URL (must be absolute)
     credentials: "include", // Additional fetch() options like `credentials` or `headers`
     fetch: enhancedFetch,
   });

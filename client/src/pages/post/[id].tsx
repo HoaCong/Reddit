@@ -9,8 +9,10 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { GetStaticPaths, GetStaticProps } from "next";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
+import PostEditDeleteButtons from "../../components/PostEditDeleteButton";
 import {
   PostDocument,
   PostIdsDocument,
@@ -20,8 +22,6 @@ import {
 } from "../../generated/graphql";
 import { addApolloState, initializeApollo } from "../../lib/apolloClient";
 import { limit } from "../index";
-import NextLink from "next/link";
-import PostEditDeleteButtons from "../../components/PostEditDeleteButton";
 
 const Post = () => {
   const router = useRouter();

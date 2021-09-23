@@ -1,11 +1,3 @@
-import { useRouter } from "next/router";
-import Layout from "../../../components/Layout";
-import {
-  UpdatePostInput,
-  useMeQuery,
-  usePostQuery,
-  useUpdatePostMutation,
-} from "../../../generated/graphql";
 import {
   Alert,
   AlertIcon,
@@ -15,9 +7,17 @@ import {
   Flex,
   Spinner,
 } from "@chakra-ui/react";
+import { Form, Formik } from "formik";
 import NextLink from "next/link";
-import { Formik, Form } from "formik";
+import { useRouter } from "next/router";
 import InputField from "../../../components/InputField";
+import Layout from "../../../components/Layout";
+import {
+  UpdatePostInput,
+  useMeQuery,
+  usePostQuery,
+  useUpdatePostMutation,
+} from "../../../generated/graphql";
 
 const PostEdit = () => {
   const router = useRouter();

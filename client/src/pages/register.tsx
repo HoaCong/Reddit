@@ -20,7 +20,7 @@ const Register = () => {
     email: "",
     password: "",
   };
-  const [registerUser, { loading: _registerUserLoading, data, error }] =
+  const [registerUser, { loading: _registerUserLoading, error }] =
     useRegisterMutation();
   const toast = useToast();
   const onRegisterSubmit = async (

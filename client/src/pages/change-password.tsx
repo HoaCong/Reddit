@@ -21,7 +21,7 @@ const ChangePassword = () => {
   const { data: authData, loading: authLoading } = useCheckAuth();
   const initialValues = { newPassword: "" };
   const [errorToken, setErrorToken] = React.useState("");
-  const [changePassword, { loading }] = useChangePasswordMutation();
+  const [changePassword, _] = useChangePasswordMutation();
   const onChangePasswordSubmit = async (
     values: ChangePasswordInput,
     { setErrors }: FormikHelpers<ChangePasswordInput>

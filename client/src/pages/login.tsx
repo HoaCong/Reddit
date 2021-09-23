@@ -23,8 +23,7 @@ const Login = () => {
     usernameOrEmail: "",
     password: "",
   };
-  const [LoginUser, { loading: _loginUserLoading, data, error }] =
-    useLoginMutation();
+  const [LoginUser, { loading: _loginUserLoading, error }] = useLoginMutation();
   const toast = useToast();
 
   const onLoginSubmit = async (
