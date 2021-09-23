@@ -13,9 +13,9 @@ import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import NextLink from "next/link";
 import Layout from "../components/Layout";
 import PostEditDeleteButtons from "../components/PostEditDeleteButton";
-import { PostsDocument, useMeQuery, usePostsQuery } from "../generated/graphql";
-import { addApolloState, initializeApollo } from "../lib/apolloClient";
 import UpvoteSection from "../components/UpvoteSection";
+import { PostsDocument, usePostsQuery } from "../generated/graphql";
+import { addApolloState, initializeApollo } from "../lib/apolloClient";
 
 export const limit = 3;
 
